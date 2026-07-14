@@ -23,3 +23,9 @@ class Base(DeclarativeBase):
 async def get_db() -> AsyncSession:  # type: ignore[return]
     async with AsyncSessionLocal() as session:
         yield session
+
+
+# Register all models with Base so Alembic autogenerate and
+# table creation see the full schema. Must be last to avoid
+# circular imports (models import Base from this module).
+from models import *  # noqa: E402, F401, F403
