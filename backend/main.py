@@ -40,3 +40,15 @@ class HealthResponse(BaseModel):
 @app.get("/api/health", response_model=HealthResponse)
 async def health() -> HealthResponse:
     return HealthResponse(status="ok", version=settings.APP_VERSION)
+
+
+# ---------------------------------------------------------------------------
+# Routers
+# ---------------------------------------------------------------------------
+
+from routers import quests, stats, users, xp  # noqa: E402
+
+app.include_router(users.router)
+app.include_router(stats.router)
+app.include_router(quests.router)
+app.include_router(xp.router)
