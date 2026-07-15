@@ -7,21 +7,25 @@ import type { Quest } from "@/lib/types"
 
 interface QuestCardProps {
   quest: Quest
-  onComplete: () => void
-  onAbandon: () => void
+  onComplete: () => Promise<void>
+  onAbandon: () => Promise<void>
 }
 
 export default function QuestCard({ quest, onComplete, onAbandon }: QuestCardProps) {
   const [completing, setCompleting] = useState(false)
   const [abandoning, setAbandoning] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const diff = DIFFICULTY_COLORS[quest.difficulty]
   const statColor = STAT_COLORS[quest.stat_name]
 
   async function handleComplete() {
     setCompleting(true)
+    setError(null)
     try {
       await onComplete()
+    } catch {
+      setError("Failed to complete quest.")
     } finally {
       setCompleting(false)
     }
@@ -29,8 +33,11 @@ export default function QuestCard({ quest, onComplete, onAbandon }: QuestCardPro
 
   async function handleAbandon() {
     setAbandoning(true)
+    setError(null)
     try {
       await onAbandon()
+    } catch {
+      setError("Failed to abandon quest.")
     } finally {
       setAbandoning(false)
     }
@@ -66,11 +73,9 @@ export default function QuestCard({ quest, onComplete, onAbandon }: QuestCardPro
 
         {/* Tags row */}
         <div className="flex flex-wrap items-center gap-2">
-          {/* XP pill */}
           <span className="rounded-full bg-blue-900/40 px-2.5 py-0.5 text-xs font-bold text-blue-300">
             +{quest.xp_reward} XP
           </span>
-          {/* Stat tag */}
           <span
             className="rounded-full px-2.5 py-0.5 text-xs font-medium"
             style={{
@@ -82,6 +87,11 @@ export default function QuestCard({ quest, onComplete, onAbandon }: QuestCardPro
             {quest.stat_name}
           </span>
         </div>
+
+        {/* Inline error */}
+        {error !== null && (
+          <p className="text-xs text-red-400">{error}</p>
+        )}
 
         {/* Action buttons */}
         <div className="flex items-center gap-2 pt-1">

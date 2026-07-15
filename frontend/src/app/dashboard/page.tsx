@@ -90,7 +90,7 @@ export default async function DashboardPage() {
           <h2 className="mb-3 text-xs font-semibold uppercase tracking-widest text-slate-500">
             Today&apos;s Quests
           </h2>
-          <QuestList quests={quests} accessToken={accessToken} />
+          <QuestList initialQuests={quests} accessToken={accessToken} />
         </section>
       </main>
     </div>
