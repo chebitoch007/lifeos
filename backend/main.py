@@ -46,8 +46,9 @@ async def health() -> HealthResponse:
 # Routers
 # ---------------------------------------------------------------------------
 
-from routers import quests, stats, users, xp  # noqa: E402
+from routers import auth, quests, stats, users, xp  # noqa: E402
 
+app.include_router(auth.router)
 app.include_router(users.router)
 app.include_router(stats.router)
 app.include_router(quests.router)
