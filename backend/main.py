@@ -53,3 +53,7 @@ app.include_router(users.router)
 app.include_router(stats.router)
 app.include_router(quests.router)
 app.include_router(xp.router)
+
+from routers import analytics  # noqa: E402
+
+app.include_router(analytics.router)

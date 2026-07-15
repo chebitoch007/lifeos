@@ -43,3 +43,27 @@ export interface XPSummary {
   current_level: number
   xp_to_next_level: number
 }
+
+// Analytics types
+export interface XPDataPoint {
+  date: string
+  xp: number
+}
+
+export interface StatDistribution {
+  stat_name: StatName
+  value: number
+}
+
+export interface QuestCompletionRate {
+  total: number
+  completed: number
+  abandoned: number
+  completion_rate: number
+}
+
+export interface StreakSummary {
+  longest_streak: number
+  current_streak: number
+  active_habits: number
+}

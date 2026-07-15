@@ -61,3 +61,21 @@ export function xpForLevel(level: number): number {
   }
   return accumulated
 }
+
+// ---------------------------------------------------------------------------
+// Chart colors (analytics page)
+// ---------------------------------------------------------------------------
+
+export const CHART_COLORS = {
+  xpLine: "#3b82f6",       // blue
+  xpArea: "rgba(59,130,246,0.15)",
+  radarFill: "rgba(59,130,246,0.25)",
+  radarStroke: "#3b82f6",
+  donutCompleted: "#22c55e",
+  donutAbandoned: "#ef4444",
+  donutActive: "#3b82f6",
+  gridLines: "#1e293b",    // slate-800
+  axisText: "#94a3b8",     // slate-400
+  tooltipBg: "#0d0d1a",
+  tooltipBorder: "#1e293b",
+} as const
