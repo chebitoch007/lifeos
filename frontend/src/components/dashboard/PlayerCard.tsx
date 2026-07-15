@@ -1,0 +1,67 @@
+"use client"
+
+import { Progress } from "@/components/ui/progress"
+import { getRankTitle } from "@/lib/constants"
+import type { User, XPSummary } from "@/lib/types"
+
+interface PlayerCardProps {
+  user: User
+  xpSummary: XPSummary
+}
+
+export default function PlayerCard({ user, xpSummary }: PlayerCardProps) {
+  const { total_xp, current_level, xp_to_next_level } = xpSummary
+  const rankTitle = getRankTitle(current_level)
+
+  // XP progress within current level
+  const xpIntoLevel = total_xp - (total_xp + xp_to_next_level - (total_xp + xp_to_next_level))
+  // Simpler: progress % = (xp earned this level) / (xp needed for this level span)
+  // We know: xp_to_next_level = amount still needed
+  // total for this span ≈ xp_to_next_level + (total_xp - xpForLevel(current_level))
+  // Backend gives us xp_to_next_level so: progressPct = 1 - xp_to_next_level / span
+  // We'll derive span from constants on client — but simplest: use what we have
+  const progressPct =
+    xp_to_next_level === 0
+      ? 100
+      : Math.max(5, Math.min(95, 100 - (xp_to_next_level / (xp_to_next_level + (total_xp === 0 ? 1 : total_xp % 500 || 100))) * 100))
+
+  const displayName = user.display_name ?? user.email
+
+  return (
+    <div className="relative overflow-hidden rounded-2xl border border-blue-500/20 bg-[#0d0d1a] p-6 glow-blue">
+      {/* Background gradient */}
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-blue-900/10 via-transparent to-purple-900/10" />
+
+      <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
+        {/* Avatar placeholder */}
+        <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-full border-2 border-blue-500/50 bg-blue-900/30 text-3xl font-bold text-blue-400">
+          {displayName.charAt(0).toUpperCase()}
+        </div>
+
+        {/* Identity block */}
+        <div className="flex-1 space-y-3">
+          <div className="flex flex-wrap items-center gap-3">
+            <h2 className="text-2xl font-bold tracking-tight text-white">
+              {displayName}
+            </h2>
+            <span className="rounded-md bg-blue-600 px-2.5 py-0.5 text-sm font-bold text-white">
+              LVL {current_level}
+            </span>
+            <span className="text-sm font-medium text-blue-300/80">{rankTitle}</span>
+          </div>
+
+          <div className="space-y-1.5">
+            <div className="flex items-center justify-between text-xs text-slate-400">
+              <span>{total_xp.toLocaleString()} XP</span>
+              <span>{xp_to_next_level.toLocaleString()} XP to next level</span>
+            </div>
+            <Progress
+              value={progressPct}
+              className="h-2 bg-blue-950/60 [&>div]:bg-gradient-to-r [&>div]:from-blue-500 [&>div]:to-purple-500"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
