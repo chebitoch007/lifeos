@@ -67,3 +67,19 @@ export interface StreakSummary {
   current_streak: number
   active_habits: number
 }
+
+// Achievement types
+export interface AchievementResponse {
+  id: string
+  key: string
+  title: string
+  description: string
+  xp_bonus: number
+  icon: string
+}
+
+export interface UserAchievementResponse {
+  id: string
+  achievement: AchievementResponse
+  earned_at: string
+}

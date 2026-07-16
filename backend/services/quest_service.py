@@ -9,6 +9,7 @@ from models.quest import Quest, QuestStatus
 from models.stat import StatName
 from schemas.quest import QuestCreate
 from services import stat_service, xp_service
+from services.achievement_service import check_and_award
 
 
 async def create_quest(
@@ -95,6 +96,10 @@ async def complete_quest(
 
     await db.commit()
     await db.refresh(quest)
+
+    # Check and award achievements after quest data is committed
+    await check_and_award(db, user_id)
+
     return quest
 
 

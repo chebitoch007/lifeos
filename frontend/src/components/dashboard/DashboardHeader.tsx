@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { BarChart2, LogOut } from "lucide-react"
+import { BarChart2, LogOut, Trophy } from "lucide-react"
 
 import { signOut } from "@/lib/auth"
 
@@ -18,13 +18,22 @@ export default function DashboardHeader({ showAnalyticsLink = true }: DashboardH
             </span>
           </Link>
           {showAnalyticsLink && (
-            <Link
-              href="/dashboard/analytics"
-              className="flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-medium text-slate-400 transition-colors hover:bg-slate-800/60 hover:text-white"
-            >
-              <BarChart2 size={13} />
-              Analytics
-            </Link>
+            <>
+              <Link
+                href="/dashboard/analytics"
+                className="flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-medium text-slate-400 transition-colors hover:bg-slate-800/60 hover:text-white"
+              >
+                <BarChart2 size={13} />
+                Analytics
+              </Link>
+              <Link
+                href="/dashboard/achievements"
+                className="flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-medium text-slate-400 transition-colors hover:bg-slate-800/60 hover:text-white"
+              >
+                <Trophy size={13} />
+                Achievements
+              </Link>
+            </>
           )}
         </div>
 
