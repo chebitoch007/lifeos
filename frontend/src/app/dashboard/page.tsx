@@ -1,3 +1,4 @@
+import Link from "next/link"
 import { redirect } from "next/navigation"
 
 import { auth } from "@/lib/auth"
@@ -46,7 +47,7 @@ export default async function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-[#0a0a0f] text-white">
-      <DashboardHeader showAnalyticsLink={true} />
+      <DashboardHeader showNavLinks={true} />
 
       <main className="mx-auto max-w-6xl space-y-6 px-4 py-6">
         <PlayerCard user={user} xpSummary={xpSummary} />
@@ -64,6 +65,21 @@ export default async function DashboardPage() {
           </h2>
           <QuestList initialQuests={quests} accessToken={accessToken} />
         </section>
+
+        {/* Habits shortcut */}
+        <Link
+          href="/dashboard/habits"
+          className="flex items-center justify-between rounded-xl border border-slate-700/50 bg-[#0d0d1a] px-5 py-4 transition-colors hover:border-blue-500/30 hover:bg-[#0d0d22]"
+        >
+          <div className="flex items-center gap-3">
+            <span className="text-2xl">🌱</span>
+            <div>
+              <p className="text-sm font-semibold text-white">Track Habits</p>
+              <p className="text-xs text-slate-500">Build daily and weekly routines</p>
+            </div>
+          </div>
+          <span className="text-slate-500 text-sm">→</span>
+        </Link>
       </main>
     </div>
   )

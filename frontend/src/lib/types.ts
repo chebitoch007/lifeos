@@ -83,3 +83,26 @@ export interface UserAchievementResponse {
   achievement: AchievementResponse
   earned_at: string
 }
+
+// Habit types
+export type HabitFrequency = "DAILY" | "WEEKLY"
+
+export interface Habit {
+  id: string
+  user_id: string
+  title: string
+  stat_name: StatName
+  frequency: HabitFrequency
+  current_streak: number
+  longest_streak: number
+  last_completed_date: string | null
+  created_at: string
+}
+
+export interface HabitLog {
+  id: string
+  habit_id: string
+  user_id: string
+  completed_date: string
+  created_at: string
+}

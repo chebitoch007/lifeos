@@ -41,7 +41,7 @@ export default async function AchievementsPage() {
 
   return (
     <div className="min-h-screen bg-[#0a0a0f] text-white">
-      <DashboardHeader showAnalyticsLink={true} />
+      <DashboardHeader showNavLinks={true} />
 
       <main className="mx-auto max-w-6xl space-y-6 px-4 py-6">
         {/* Page heading */}

@@ -6,7 +6,7 @@ celery_app = Celery(
     "lifeos",
     broker=settings.CELERY_BROKER_URL,
     backend=settings.CELERY_RESULT_BACKEND,
-    include=[],  # task modules will be added here in later phases
+    include=["tasks.habits"],  # task modules will be added here in later phases
 )
 
 celery_app.conf.update(
