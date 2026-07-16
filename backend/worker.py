@@ -9,6 +9,8 @@ celery_app = Celery(
     include=["tasks.habits"],  # task modules will be added here in later phases
 )
 
+celery_app.config_from_object("celeryconfig")
+
 celery_app.conf.update(
     task_serializer="json",
     accept_content=["json"],

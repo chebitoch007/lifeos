@@ -116,3 +116,6 @@ Thumbs.db
 # ---------------------------------------------------------------------------
 *.pem
 *.key
+
+# Local secrets documentation
+SECRETS.md
