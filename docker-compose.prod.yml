@@ -80,8 +80,10 @@ services:
     command: >
       celery -A worker.celery_app beat
       --loglevel=info
-      --schedule=/tmp/celerybeat-schedule
+      --schedule=/var/run/celery/celerybeat-schedule
     restart: unless-stopped
+    volumes:
+      - celerybeat_data:/var/run/celery
     environment:
       DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-lifeos}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-lifeos}
       REDIS_URL: redis://redis:6379/0
@@ -113,3 +115,4 @@ services:
 volumes:
   postgres_data:
   redis_data:
+  celerybeat_data:

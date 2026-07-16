@@ -23,6 +23,7 @@ from models.habit import Habit, HabitFrequency, HabitLog
 from models.stat import StatName
 from schemas.habit import HabitCreate
 from services import stat_service, xp_service
+from logger import get_logger
 from services.achievement_service import check_and_award
 
 # ---------------------------------------------------------------------------
@@ -33,6 +34,8 @@ FREQUENCY_GAP: dict[HabitFrequency, int] = {
     HabitFrequency.DAILY: 1,
     HabitFrequency.WEEKLY: 7,
 }
+
+logger = get_logger(__name__)
 
 XP_PER_LOG: dict[HabitFrequency, int] = {
     HabitFrequency.DAILY: 10,
@@ -143,6 +146,11 @@ async def log_habit(
 
     # 7. Update last_completed_date
     habit.last_completed_date = today
+
+    logger.info(
+        "habit_logged user=%s habit=%s streak=%s",
+        user_id, habit_id, habit.current_streak,
+    )
 
     # 8. Award XP
     xp_amount = XP_PER_LOG[habit.frequency]

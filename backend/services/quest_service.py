@@ -5,11 +5,14 @@ from fastapi import HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from logger import get_logger
 from models.quest import Quest, QuestStatus
 from models.stat import StatName
 from schemas.quest import QuestCreate
 from services import stat_service, xp_service
 from services.achievement_service import check_and_award
+
+logger = get_logger(__name__)
 
 
 async def create_quest(
@@ -92,6 +95,11 @@ async def complete_quest(
         user_id=user_id,
         stat_name=StatName(quest.stat_name),
         delta=1.0,
+    )
+
+    logger.info(
+        "quest_completed user=%s quest=%s xp=%s",
+        user_id, quest_id, quest.xp_reward,
     )
 
     await db.commit()

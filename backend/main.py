@@ -1,9 +1,15 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+from slowapi import _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
 
 from config import settings
+from limiter import limiter
+from logger import setup_logging
 from worker import celery_app  # noqa: F401 — ensures Celery is wired at import time
+
+setup_logging(debug=settings.DEBUG)
 
 app = FastAPI(
     title="LifeOS API",
@@ -13,9 +19,12 @@ app = FastAPI(
     openapi_url="/api/openapi.json",
 )
 
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=settings.CORS_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

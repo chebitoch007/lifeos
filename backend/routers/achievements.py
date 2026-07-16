@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy import select
+from sqlalchemy.orm import joinedload
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from auth import get_current_user
@@ -27,29 +28,23 @@ async def my_achievements(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ) -> list[UserAchievementResponse]:
-    """Return the authenticated user's earned achievements with earned_at timestamps."""
+    """Return the authenticated user's earned achievements — single query via joinedload."""
     result = await db.execute(
         select(UserAchievement)
+        .options(joinedload(UserAchievement.achievement))
         .where(UserAchievement.user_id == current_user.id)
         .order_by(UserAchievement.earned_at.desc())
     )
     user_achievements = result.scalars().all()
 
-    # Load achievement details for each
-    responses = []
-    for ua in user_achievements:
-        ach_result = await db.execute(
-            select(Achievement).where(Achievement.id == ua.achievement_id)
+    return [
+        UserAchievementResponse(
+            id=ua.id,
+            achievement=AchievementResponse.model_validate(ua.achievement),
+            earned_at=ua.earned_at,
         )
-        ach = ach_result.scalar_one()
-        responses.append(
-            UserAchievementResponse(
-                id=ua.id,
-                achievement=AchievementResponse.model_validate(ach),
-                earned_at=ua.earned_at,
-            )
-        )
-    return responses
+        for ua in user_achievements
+    ]
 
 
 @router.post("/api/users/me/achievements/check", response_model=list[UserAchievementResponse])
@@ -62,10 +57,10 @@ async def check_achievements(
 
     responses = []
     for ua in newly_awarded:
-        ach_result = await db.execute(
+        result = await db.execute(
             select(Achievement).where(Achievement.id == ua.achievement_id)
         )
-        ach = ach_result.scalar_one()
+        ach = result.scalar_one()
         responses.append(
             UserAchievementResponse(
                 id=ua.id,

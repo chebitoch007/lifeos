@@ -1,15 +1,13 @@
 import uuid
 
 from fastapi import HTTPException, status
-from passlib.context import CryptContext
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from auth import hash_password
 from models.user import User
 from schemas.user import UserCreate, UserUpdate
 from services import stat_service
-
-_pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 async def create_user(db: AsyncSession, data: UserCreate) -> User:
@@ -23,7 +21,7 @@ async def create_user(db: AsyncSession, data: UserCreate) -> User:
 
     user = User(
         email=data.email,
-        hashed_password=_pwd_context.hash(data.password),
+        hashed_password=hash_password(data.password),
         display_name=data.display_name,
     )
     db.add(user)

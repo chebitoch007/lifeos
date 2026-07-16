@@ -1,11 +1,15 @@
 import uuid
 from datetime import datetime
+from typing import TYPE_CHECKING
 
 from sqlalchemy import DateTime, ForeignKey, Integer, String, Text, text
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.sql import func
 
 from database import Base
+
+if TYPE_CHECKING:
+    pass  # avoid circular imports — Achievement is self-contained
 
 
 class Achievement(Base):
@@ -38,3 +42,6 @@ class UserAchievement(Base):
     earned_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False, server_default=func.now()
     )
+
+    # Relationship — loaded via joinedload in the achievements router
+    achievement: Mapped["Achievement"] = relationship("Achievement", lazy="joined")
