@@ -7,7 +7,8 @@ const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
   title: "LifeOS",
-  description: "Your operating system for life",
+  description: "Level up your life",
+  icons: { icon: "/favicon.svg" },
 }
 
 export default function RootLayout({

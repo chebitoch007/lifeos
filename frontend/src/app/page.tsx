@@ -1,7 +1,8 @@
-export default function Home() {
-  return (
-    <main className="flex min-h-screen items-center justify-center bg-background">
-      <p className="text-xl font-medium text-foreground">LifeOS — coming soon</p>
-    </main>
-  );
+import { redirect } from "next/navigation"
+import { auth } from "@/lib/auth"
+
+export default async function HomePage() {
+  const session = await auth()
+  if (session) redirect("/dashboard")
+  redirect("/login")
 }

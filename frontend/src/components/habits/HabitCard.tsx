@@ -25,7 +25,10 @@ export default function HabitCard({ habit, accessToken, onDelete }: HabitCardPro
   const [error, setError] = useState<string | null>(null)
 
   const todayUTC = getTodayUTC()
-  const alreadyLoggedToday = habit.last_completed_date === todayUTC
+  const alreadyLoggedToday =
+    habit.frequency === "DAILY"
+      ? habit.last_completed_date === todayUTC
+      : false
 
   const statColor = STAT_COLORS[habit.stat_name]
 

@@ -1,7 +1,7 @@
 "use client"
 
 import { Progress } from "@/components/ui/progress"
-import { getRankTitle } from "@/lib/constants"
+import { getRankTitle, xpForLevel } from "@/lib/constants"
 import type { User, XPSummary } from "@/lib/types"
 
 interface PlayerCardProps {
@@ -10,20 +10,17 @@ interface PlayerCardProps {
 }
 
 export default function PlayerCard({ user, xpSummary }: PlayerCardProps) {
-  const { total_xp, current_level, xp_to_next_level } = xpSummary
+  const { total_xp, current_level } = xpSummary
   const rankTitle = getRankTitle(current_level)
 
-  // XP progress within current level
-  const xpIntoLevel = total_xp - (total_xp + xp_to_next_level - (total_xp + xp_to_next_level))
-  // Simpler: progress % = (xp earned this level) / (xp needed for this level span)
-  // We know: xp_to_next_level = amount still needed
-  // total for this span ≈ xp_to_next_level + (total_xp - xpForLevel(current_level))
-  // Backend gives us xp_to_next_level so: progressPct = 1 - xp_to_next_level / span
-  // We'll derive span from constants on client — but simplest: use what we have
-  const progressPct =
-    xp_to_next_level === 0
-      ? 100
-      : Math.max(5, Math.min(95, 100 - (xp_to_next_level / (xp_to_next_level + (total_xp === 0 ? 1 : total_xp % 500 || 100))) * 100))
+  // Accurate XP progress using the shared curve from constants
+  const xpStart = xpForLevel(current_level)
+  const xpEnd = xpForLevel(current_level + 1)
+  const progressPct = Math.min(
+    100,
+    Math.round(((total_xp - xpStart) / (xpEnd - xpStart)) * 100),
+  )
+  const xpToNext = Math.max(0, xpEnd - total_xp)
 
   const displayName = user.display_name ?? user.email
 
@@ -53,7 +50,7 @@ export default function PlayerCard({ user, xpSummary }: PlayerCardProps) {
           <div className="space-y-1.5">
             <div className="flex items-center justify-between text-xs text-slate-400">
               <span>{total_xp.toLocaleString()} XP</span>
-              <span>{xp_to_next_level.toLocaleString()} XP to next level</span>
+              <span>{xpToNext.toLocaleString()} XP to next level</span>
             </div>
             <Progress
               value={progressPct}

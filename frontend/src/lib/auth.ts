@@ -45,6 +45,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     async session({ session, token }) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       ;(session as any).accessToken = token.accessToken
+      session.user.id = token.sub ?? ""
       return session
     },
   },
