@@ -17,12 +17,10 @@ export default async function DashboardPage() {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const userId = (session as any).user?.id as string | undefined
+  const userId = (session as any).user?.id as string
 
   const [statsRes, xpRes, questsRes] = await Promise.all([
-    userId
-      ? fetchWithAuth(`/api/users/${userId}/stats`, session)
-      : fetchWithAuth("/api/users/me/stats", session),
+    fetchWithAuth(`/api/users/${userId}/stats`, session),
     fetchWithAuth("/api/users/me/xp", session),
     fetchWithAuth("/api/quests?quest_status=ACTIVE", session),
   ])
@@ -34,7 +32,7 @@ export default async function DashboardPage() {
   const quests: Quest[] = questsRes.ok ? await questsRes.json() : []
 
   const user: User = {
-    id: userId ?? "",
+    id: userId,
     email: session.user?.email ?? "",
     display_name: session.user?.name ?? null,
     avatar_url: null,

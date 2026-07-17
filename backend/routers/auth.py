@@ -5,8 +5,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from auth import create_access_token, get_current_user, verify_password
 from database import get_db
 from limiter import limiter
-from schemas.user import UserCreate, UserResponse
-from services.user_service import create_user, get_user_by_email
+from schemas.user import UserResponse
+from services.user_service import get_user_by_email
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
 
@@ -28,19 +28,6 @@ async def login(
 
     access_token = create_access_token(data={"sub": str(user.id)})
     return {"access_token": access_token, "token_type": "bearer"}
-
-
-@router.post(
-    "/register",
-    response_model=UserResponse,
-    status_code=status.HTTP_201_CREATED,
-)
-async def register(
-    data: UserCreate,
-    db: AsyncSession = Depends(get_db),
-) -> UserResponse:
-    user = await create_user(db, data)
-    return UserResponse.model_validate(user)
 
 
 @router.get("/me", response_model=UserResponse)
